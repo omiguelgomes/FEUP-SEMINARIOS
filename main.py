@@ -140,6 +140,38 @@ class Plotter:
             plot = sns.lineplot(x="size", y="tip_percentage", data=self.data)
             plot.get_figure().savefig(self.graph_type)
 
+        elif self.graph_type == 'correlation':
+            data1 = self.data.loc[:, ["total_bill", "tip", "tip_percentage", "size"]]
+            f, ax = plt.subplots(figsize=(10,10))
+            plot = sns.heatmap(data1.corr(), annot=True, linewidths=0.5, fmt='.1f', ax=ax)
+            plot.get_figure().savefig(self.graph_type)
+
+        elif self.graph_type == 'data_line_plot_simple':
+            data1 = self.data.loc[:, ["total_bill", "tip", "tip_percentage"]]
+            plot = data1.plot()
+            plot.get_figure().savefig(self.graph_type)
+
+        elif self.graph_type == 'data_line_plot_advanced':
+            data1 = self.data.loc[:, ["total_bill", "tip", "tip_percentage"]]
+            plot = data1.plot(subplots = True)
+            plt.savefig(self.graph_type)
+
+        elif self.graph_type == 'hist_cumulative_vs_dist':
+            fig, axes = plt.subplots(nrows=2,ncols=1)
+            data1 = self.data.loc[:, ["total_bill", "tip", "tip_percentage"]]
+            data1.plot(kind = "hist",y = "total_bill",bins = 60,range= (0,50),density = True,ax = axes[0])
+            data1.plot(kind = "hist",y = "total_bill",bins = 60,range= (0,50),density = True,ax = axes[1],cumulative = True)
+            plt.savefig(self.graph_type)
+
+        elif self.graph_type == 'joint_plot':
+            sns.jointplot(data=self.data, x='total_bill', y='tip', kind="reg")
+            plt.savefig(self.graph_type)
+
+        elif self.graph_type == 'size_vs_day':
+            res=pd.pivot_table(data=self.data,index="day",columns="size",values="tip")
+            sns.heatmap(res, annot=True, cmap="RdYlGn")
+            plt.savefig(self.graph_type)
+
 
         plt.figure().clear()
 
@@ -155,7 +187,8 @@ class Plotter:
 def main():
     graph_types = ['scatter_simplified', 'scatter_advanced', 'line', 'line_size', 
     'line_tip', 'barv', 'barh', 'bar_gender', 'histogram', 'hexplot', 'scatterplot_smoker', 
-    'scatterplot_meal_time', 'violin_plot', 'kernel', 'tip_per_people']
+    'scatterplot_meal_time', 'violin_plot', 'kernel', 'tip_per_people', 'correlation', 'data_line_plot_simple', 
+    'data_line_plot_advanced', 'hist_cumulative_vs_dist', 'joint_plot', 'size_vs_day']
 
     plotter = Plotter("scatter_simplified")
 
